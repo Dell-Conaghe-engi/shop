@@ -3,11 +3,14 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.base import Base
 
 class Users(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(70))
     telegram: Mapped[int] = mapped_column(BigInteger, unique=True)
-    phone: Mapped[str] = mapped_column(String(20),nullable=True)
+    phone: Mapped[str] = mapped_column(String(20), nullable=True)
 
-    def __str__(self):
+
+    carts: Mapped[int] = relationship("Carts", back_populates="user_cart")
+    def str(self):
         return self.name

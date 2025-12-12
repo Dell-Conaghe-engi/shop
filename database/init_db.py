@@ -7,7 +7,6 @@ from database.base import Base
 from database.models import Users, Carts, FinallyCarts, Categories, Products, Orders
 from dotenv import load_dotenv
 
-
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 DB_USER = os.getenv("DB_USER")
@@ -19,6 +18,7 @@ DB_NAME = os.getenv("DB_NAME")
 DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 engine = create_engine(DATABASE_URL, echo=True, future=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
 
 def init_db():
     print('создаём таблицы')
@@ -38,16 +38,16 @@ def init_db():
                 session.flush()
             category_map[name] = category.id
 
-        products=[
+        products = [
             ("Торты", "Медовик", 45, "мёд, мука, сахар, яйца, масло", "media/hone_cake.jpg"),
             ("Торты", "Наполеон", 45, "мука, масло, молоко, яйца, соль", "media/napoleon_cake.jpg"),
             ("Торты", "Красный бархат", 45, "мука, масло, кефир, яйца, соль", "media/red_velvet_cake.jpg"),
             ("Сыр", "Моцарелла", 45, "молоко, вода", "media/mozzarella_cheese.jpg"),
             ("Сыр", "Чеддер", 45, "молоко, соль", "media/cheddar_cheese.jpg"),
-            ("Сыр", "Бри", 45, "молоко", "media/brie_cheese"),
-            ("Печенье","Орео", 45, "сахар, мука, вода, масло,соль", "media/oreo.jpg"),
-            ("Печенье","Кукис", 45, "мука, масло, яйцо, сахар, шоколад", "media/cookies.jpg"),
-            ("Печенье","Имбирное печенье", 45, "мёд, имбирь, мука, корица, соль", "media/ginger_cookies")]
+            ("Сыр", "Бри", 45, "молоко", "media/brie_cheese.jpg"),
+            ("Печенье", "Орео", 45, "сахар, мука, вода, масло,соль", "media/oreo.jpg"),
+            ("Печенье", "Кукис", 45, "мука, масло, яйцо, сахар, шоколад", "media/cookies.jpg"),
+            ("Печенье", "Имбирное печенье", 45, "мёд, имбирь, мука, корица, соль", "media/ginger_cookies.jpg")]
         for category_name, name, price, desc, image in products:
             product_exists = session.scalar(select(Products).filter_by(product_name=name))
             if not product_exists:
@@ -63,5 +63,5 @@ def init_db():
         session.commit()
         print("Первичные данные категорий ")
 
-    if __name__ == "__main__":
+if __name__ == "__main__":
         init_db()
