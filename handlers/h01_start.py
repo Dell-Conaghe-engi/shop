@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, FSInputFile
-from database.utills import db_register_user
+from database.utils import db_register_user
 from keyboards.reply import start_kb, phone_kb
 from handlers.h02_get_contact import show_main_menu
 router = Router()
@@ -36,7 +36,7 @@ async def register_user(message: Message):
     chat_id = message.chat.id
     full_name = message.from_user.full_name
 
-    if db_register_user(chat_id, full_name):
+    if db_register_user(full_name, chat_id):
         await message.answer(text='добро пожаловать в магазин')
         await show_main_menu(message)
 
