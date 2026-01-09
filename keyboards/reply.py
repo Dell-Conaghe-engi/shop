@@ -1,6 +1,6 @@
 from aiogram.types import KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, ReplyKeyboardMarkup
-
+'''модуль для функций создающих кнопки под клавиатурой'''
 
 def start_kb():
     '''приветственная кнопка'''

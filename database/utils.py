@@ -3,9 +3,11 @@ from database.base import engine
 from database.models import Users, Carts
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update, select
+'''создание, чтение,изменение и удаление, данных с помощью функций в базу данных'''
 
 def get_session():
     return Session(engine)
+
 
 def db_register_user(full_name, chat_id):
     """ регистрация пользователя в базе данных """
@@ -17,6 +19,7 @@ def db_register_user(full_name, chat_id):
         return False
     except IntegrityError:
         return True
+
 
 def db_update_user(chat_id, phone):
     '''обновление номера телефона пользователя в базе данных'''
@@ -31,7 +34,7 @@ def db_create_user_cart(chat_id):
     try:
         with get_session() as session:
             subquery = session.scalar(select(Users).where(Users.telegram == chat_id))
-            query= Carts(user_id=subquery.id)
+            query = Carts(user_id=subquery.id)
             session.add(query)
             session.commit()
             return True
@@ -39,4 +42,3 @@ def db_create_user_cart(chat_id):
         return False
     except AttributeError:
         return False
-

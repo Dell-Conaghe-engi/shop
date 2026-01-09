@@ -4,7 +4,9 @@ from aiogram.types import Message, FSInputFile
 from database.utils import db_register_user
 from keyboards.reply import start_kb, phone_kb
 from handlers.h02_get_contact import show_main_menu
+
 router = Router()
+'''хендлер для старта и регустрации нового пользователя в бота'''
 
 
 @router.message(CommandStart())
