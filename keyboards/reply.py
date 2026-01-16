@@ -1,6 +1,8 @@
 from aiogram.types import KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, ReplyKeyboardMarkup
+
 '''модуль для функций создающих кнопки под клавиатурой'''
+
 
 def start_kb():
     '''приветственная кнопка'''
@@ -25,4 +27,11 @@ def get_main_menu():
     builder.button(text='Корзина 🛒')
     builder.button(text='Настройки ⚙️')
     builder.adjust(2, 2)
+    return builder.as_markup(resize_keyboard=True)
+
+
+def bake_to_main_menu():
+    '''кнопка для возврата в главное меню'''
+    builder = ReplyKeyboardBuilder()
+    builder.button(text='Вернуться в главное меню 🏠')
     return builder.as_markup(resize_keyboard=True)
