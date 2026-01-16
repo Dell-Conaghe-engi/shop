@@ -2,7 +2,7 @@ from sqlalchemy import String, DECIMAL, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.base import Base
 from .categories import Categories
-
+'''модель для продуктов'''
 
 class Products(Base):
     __tablename__ = "products"

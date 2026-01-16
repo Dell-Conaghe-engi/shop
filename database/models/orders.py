@@ -1,7 +1,7 @@
 from sqlalchemy import String, ForeignKey, DECIMAL, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.base import Base
-
+'''Модель для заказов'''
 
 class Orders(Base):
     __tablename__ = "orders"

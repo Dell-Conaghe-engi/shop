@@ -2,7 +2,7 @@ from sqlalchemy import DECIMAL, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.base import Base
 from .users import Users
-
+'''модель для корзины'''
 
 class Carts(Base):
     __tablename__ = "carts"
