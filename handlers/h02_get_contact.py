@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from database.utils import db_update_user, db_create_user_cart
 from keyboards.reply import get_main_menu
-'''регестрация пользователя'''
+'''регистрация пользователя'''
 router = Router()
 
 @router.message(F.contact)
@@ -14,7 +14,7 @@ async def update_info_user(message: Message):
     db_update_user(chat_id, phone)
     if db_create_user_cart(chat_id):
         await message.answer(text=
-            'Вы зарегестрированны'
+            'Вы зарегистрированны'
         )
     await show_main_menu(message)
 
