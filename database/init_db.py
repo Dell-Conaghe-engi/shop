@@ -1,6 +1,6 @@
 import os
 from itertools import product
-
+'''Скрипт для создания таблиц в базе данных'''
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 from database.base import Base

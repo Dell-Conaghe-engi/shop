@@ -2,7 +2,7 @@ import  asyncio
 from aiogram import Bot,Dispatcher
 from handlers import h01_start, h02_get_contact
 from config import TOKEN
-
+'''корневой файл, запуск бота'''
 bot=Bot(token=TOKEN)
 
 dp=Dispatcher()
