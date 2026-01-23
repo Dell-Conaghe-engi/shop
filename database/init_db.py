@@ -1,12 +1,12 @@
 import os
 from itertools import product
-'''Скрипт для создания таблиц в базе данных'''
+
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 from database.base import Base
 from database.models import Users, Carts, FinallyCarts, Categories, Products, Orders
 from dotenv import load_dotenv
-
+'''Скрипт для создания таблиц в базе данных'''
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 DB_USER = os.getenv("DB_USER")

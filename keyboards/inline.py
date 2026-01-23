@@ -1,5 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from database.utils import db_get_all_categories, db_get_finally_price
+
 
 def generate_category_menu(chat_id):
     '''создоние клавиатуры с выбором категорий'''
