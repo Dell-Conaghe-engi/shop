@@ -1,5 +1,5 @@
 import os
-from itertools import product
+
 
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
