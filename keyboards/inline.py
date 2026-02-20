@@ -5,7 +5,7 @@ from database.utils import db_get_all_categories, db_get_finally_price, db_get_p
 
 
 def generate_category_menu(chat_id):
-    '''создоние клавиатуры с выбором категорий'''
+    """создоние клавиатуры с выбором категорий"""
     categories = db_get_all_categories()
     total_price = db_get_finally_price(chat_id)
 
@@ -30,3 +30,5 @@ def show_product_by_category(category_id: int):
         InlineKeyboardButton(text="⬅️ Назад", callback_data='return_to_category')
     )
     return builder.as_markup()
+
+
