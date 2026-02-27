@@ -6,6 +6,7 @@ from sqlalchemy import update, select, func, join
 
 '''создание, чтение,изменение и удаление, данных с помощью функций в базу данных'''
 
+
 def get_session():
     return Session(engine)
 
@@ -44,11 +45,13 @@ def db_create_user_cart(chat_id):
     except AttributeError:
         return False
 
+
 def db_get_all_categories():
     '''получение всех категорий из базы данных'''
     with get_session() as session:
         query = select(Categories)
         return session.scalars(query).all()
+
 
 def db_get_finally_price(chat_id):
     """Получение итоговой цены"""
@@ -59,21 +62,30 @@ def db_get_finally_price(chat_id):
             Users.telegram == chat_id)
         return session.execute(query).fetchone()[0]
 
+
 def db_get_last_orders(chat_id, limit=5):
     '''получение последних 5 заказов пользователя'''
     with get_session() as session:
         query = (
             select(Orders).
             join(Carts, Orders.cart_id == Carts.id).
-            join(Users, Carts.user_id==Users.id).
+            join(Users, Carts.user_id == Users.id).
             where(Users.telegram == chat_id).
             order_by(Orders.id.desc()).
             limit(limit)
         )
         return session.scalars(query).all()
 
-def  db_get_product(category_id):
+
+def db_get_product(category_id):
     '''получение продуктов по id категории'''
     with get_session() as session:
         query = select(Products).where(Products.category_id == category_id)
         return session.scalars(query).all()
+
+
+def db_get_product_by_id(product_id):
+    """Получение продукта по id"""
+    with get_session() as session:
+        query = select(Products).where(Products.id == product_id)
+        return session.scalar(query)
