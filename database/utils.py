@@ -89,3 +89,31 @@ def db_get_product_by_id(product_id):
     with get_session() as session:
         query = select(Products).where(Products.id == product_id)
         return session.scalar(query)
+def db_get_user_cart(chat_id):
+    '''получение корзины пользователя по id корзины'''
+    with get_session() as session:
+        query = select(Carts).join(Users, Users.id == Carts.user_id).where(Users.telegram == chat_id)
+        return session.scalar(query)
+def db_add_or_update_item(cart_id, product_id,product_name,product_price,increment: int = 0):
+    """Добавление или обновление товара в корзине"""
+    try:
+        with get_session() as session:
+            item=(
+                session.query(FinallyCarts).filter_by(cart_id=cart_id,product_id=product_id).first()
+            )
+            if item:
+                if increment != 0:
+                    item.quantity = max(1, item.quantity + increment)
+
+            else:
+                qty=1 if increment <= 0 else increment
+                item=FinallyCarts(
+                            cart_id=cart_id,
+                            product_id=product_id,
+                            product_name=product_name,
+                            quantity=qty,
+                            final_price=0
+                    )
+                session.add(item)
+
+            item.final_price=item.quantity*product_price
