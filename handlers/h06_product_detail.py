@@ -1,8 +1,9 @@
 from aiogram import Router, F, Bot
 from aiogram.types import FSInputFile, CallbackQuery
 from database.utils import db_get_product_by_id, db_get_user_cart, db_add_or_update_item
-from keyboards.inline import generate_category_menu
+from keyboards.inline import generate_category_menu, quantity_cart_controls
 from bot_utils.message_utils import text_for_caption
+from keyboards.reply import phone_kb
 
 router = Router()
 
@@ -23,7 +24,7 @@ async def show_product_detail(callback: CallbackQuery, bot: Bot):
         db_add_or_update_item(
             cart_id=user_cart.id,
             product_id = product.id,
-        product_name = product.name,
+        product_name = product.product_name,
         product_price =product.price,
         increment = 1
 
@@ -45,3 +46,9 @@ async def show_product_detail(callback: CallbackQuery, bot: Bot):
         )
     else:
         await ask_for_phone(chat_id, bot)
+
+async def ask_for_phone(chat_id, bot: Bot):
+    '''запрос телефона юзера если отсутствует автаризация'''
+    await bot.send_message(chat_id=chat_id,
+                           text="предоставте номер телефона для аформления заказа",
+                           reply_markup=phone_kb())

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from database.base import engine
 from database.models import Users, Carts, Categories, FinallyCarts, Orders, Products
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import update, select, func, join
+from sqlalchemy import update, select, func, join, DECIMAL
 
 '''создание, чтение,изменение и удаление, данных с помощью функций в базу данных'''
 
