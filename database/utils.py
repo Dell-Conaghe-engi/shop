@@ -6,6 +6,7 @@ from sqlalchemy import update, select, func, join
 
 '''создание, чтение,изменение и удаление, данных с помощью функций в базу данных'''
 
+
 def get_session():
     return Session(engine)
 
@@ -44,11 +45,13 @@ def db_create_user_cart(chat_id):
     except AttributeError:
         return False
 
+
 def db_get_all_categories():
     '''получение всех категорий из базы данных'''
     with get_session() as session:
         query = select(Categories)
         return session.scalars(query).all()
+
 
 def db_get_finally_price(chat_id):
     """Получение итоговой цены"""
@@ -59,21 +62,95 @@ def db_get_finally_price(chat_id):
             Users.telegram == chat_id)
         return session.execute(query).fetchone()[0]
 
+
 def db_get_last_orders(chat_id, limit=5):
     '''получение последних 5 заказов пользователя'''
     with get_session() as session:
         query = (
             select(Orders).
             join(Carts, Orders.cart_id == Carts.id).
-            join(Users, Carts.user_id==Users.id).
+            join(Users, Carts.user_id == Users.id).
             where(Users.telegram == chat_id).
             order_by(Orders.id.desc()).
             limit(limit)
         )
         return session.scalars(query).all()
 
-def  db_get_product(category_id):
+
+def db_get_product(category_id):
     '''получение продуктов по id категории'''
     with get_session() as session:
         query = select(Products).where(Products.category_id == category_id)
         return session.scalars(query).all()
+
+
+def db_get_product_by_id(product_id):
+    """Получение продукта по id"""
+    with get_session() as session:
+        query = select(Products).where(Products.id == product_id)
+        return session.scalar(query)
+
+
+def db_get_user_cart(chat_id):
+    '''получение корзины пользователя по id корзины'''
+    with get_session() as session:
+        query = select(Carts).join(Users, Users.id == Carts.user_id).where(Users.telegram == chat_id)
+        return session.scalar(query)
+
+
+def db_add_or_update_item(
+        cart_id: int,
+        product_id: int,
+        product_name: str,
+        product_price: DECIMAL,
+        increment: int = 0
+):
+    """Добавление или обновление товара в корзине"""
+    try:
+        with get_session() as session:
+            item = (
+                session.query(FinallyCarts)
+                .filter_by(cart_id=cart_id, product_id=product_id)
+                .first()
+            )
+
+            if item:
+                if increment != 0:
+                    item.quantity = max(1, item.quantity + increment)
+            else:
+                qty = 1 if increment <= 0 else increment
+                item = FinallyCarts(
+                    cart_id=cart_id,
+                    product_id=product_id,
+                    product_name=product_name,
+                    quantity=qty,
+                    final_price=0
+                )
+                session.add(item)
+
+            item.final_price = item.quantity * product_price
+
+            products_sum, total_products = session.query(
+                func.coalesce(func.sum(FinallyCarts.final_price), 0),
+                func.coalesce(func.sum(FinallyCarts.quantity), 0)
+            ).filter(
+                FinallyCarts.cart_id == cart_id
+            ).one()
+
+            session.query(Carts).filter(
+                Carts.id == cart_id
+            ).update({
+                Carts.total_price: products_sum,
+                Carts.total_products: total_products
+            })
+
+            session.commit()
+
+            return {
+                "status": "ok",
+                "total_price": float(products_sum),
+                "total_products": int(total_products),
+                "product_quantity": item.quantity
+            }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
