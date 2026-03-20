@@ -1,6 +1,6 @@
 from aiogram import Router, F, Bot
 from aiogram.types import FSInputFile, CallbackQuery
-from database.utils import db_get_product_by_id, db_get_user_cart, db_add_or_update_item
+from database.utils import db_get_product_by_id, db_get_user_cart, db_add_or_update_item, db_get_all_categories
 from keyboards.inline import generate_category_menu, quantity_cart_controls
 from bot_utils.message_utils import text_for_caption
 from keyboards.reply import phone_kb
@@ -23,32 +23,56 @@ async def show_product_detail(callback: CallbackQuery, bot: Bot):
     if user_cart:
         db_add_or_update_item(
             cart_id=user_cart.id,
-            product_id = product.id,
-        product_name = product.product_name,
-        product_price =product.price,
-        increment = 1
+            product_id=product.id,
+            product_name=product.product_name,
+            product_price=product.price,
+            increment=1
 
         )
 
         caption = text_for_caption(
-        name=product.product_name,
-        description=product.description,
-        base_price=float(product.price)
+            name=product.product_name,
+            description=product.description,
+            base_price=float(product.price)
         )
 
         product_image = FSInputFile(path=product.image)
         await bot.send_photo(
-        chat_id=chat_id,
-        photo=product_image,
-        caption=caption,
-        parse_mode="HTML",
-        reply_markup=quantity_cart_controls()
+            chat_id=chat_id,
+            photo=product_image,
+            caption=caption,
+            parse_mode="HTML",
+            reply_markup=quantity_cart_controls()
         )
     else:
         await ask_for_phone(chat_id, bot)
+
 
 async def ask_for_phone(chat_id, bot: Bot):
     '''запрос телефона юзера если отсутствует автаризация'''
     await bot.send_message(chat_id=chat_id,
                            text="предоставте номер телефона для аформления заказа",
                            reply_markup=phone_kb())
+
+
+@router.callback_query(F.data == 'from_detail_to_category')
+async def handle_back_to_category(callback: CallbackQuery, bot: Bot):
+    '''возврат от просмотра детального продукта к спискам категорий'''
+    chat_id = callback.message.chat.id
+    message_id = callback.message.message_id
+    try:
+        await bot.delete_message(chat_id=chat_id, message_id=message_id)
+    except Exception as e:
+        print(f'{e}')
+
+    categoories = db_get_all_categories()
+
+    if not categoories:
+        await bot.send_message(chat_id=chat_id, text='категорий не найдено')
+        return
+    keyboard = generate_category_menu(chat_id)
+    await bot.send_message(
+        chat_id=chat_id,
+        text='выберите нужную категорию',
+        reply_markup=keyboard)
+    await callback.answer()
