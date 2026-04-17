@@ -159,3 +159,4 @@ def db_get_product_by_name(product_name):
     """Получение продукта по name"""
     with get_session() as session:
         query = select(Products).where(Products.product_name == product_name)
+        return session.scalar(query)
