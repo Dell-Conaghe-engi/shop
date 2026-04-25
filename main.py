@@ -1,7 +1,7 @@
 import  asyncio
 from aiogram import Bot,Dispatcher
 from handlers import h01_start, h02_get_contact, h03_order, h04_categories, h05_navigation, h06_product_detail, \
-    h07_cart_quantity, h08_add_to_cart
+    h07_cart_quantity, h08_add_to_cart, h09_open_cart
 from config import TOKEN
 ''' запуск бота'''
 bot=Bot(token=TOKEN)
@@ -16,6 +16,7 @@ dp.include_router(h05_navigation.router)
 dp.include_router(h06_product_detail.router)
 dp.include_router(h07_cart_quantity.router)
 dp.include_router(h08_add_to_cart.router)
+dp.include_router(h09_open_cart.router)
 
 
 
