@@ -23,7 +23,7 @@ async def open_cart(callback: CallbackQuery):
 
 async def show_cart(chat_id: int, send_fn):
     '''🍉🍉🍉🍉🍉🍉'''
-    cart_items = db_get_cart_items(chat_id) # TODO: сделать нормально
+    cart_items = db_get_cart_items(chat_id)
 
     if not cart_items:
         await send_fn('Корзина пуста')
@@ -32,7 +32,7 @@ async def show_cart(chat_id: int, send_fn):
     total = 0
     for item in cart_items:
         total =float(item['final_price']) + total
-        text += f'{item["product_name"]} - {item["quantity"]} шт. - {total}₽'
+        text += f'{item["product_name"]} - {item["quantity"]} шт. - {item['final_price']}₽\n'
 
     text += f'\nИтого: {total}₽'
     await send_fn(text, reply_markup=cart_actions_kb())
