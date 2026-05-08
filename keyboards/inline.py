@@ -45,5 +45,12 @@ def quantity_cart_controls(quantity =1):
     return builder.as_markup(resize_keyboard=True)
 
 def cart_actions_kb():
-    pass
-
+    '''добавить, оформить, убрать из карзины'''
+    builder = InlineKeyboardBuilder()
+    builder.row(
+            InlineKeyboardButton(text='оформить заказ 🍉🍉🍉', callback_data='confirm_order'),
+            InlineKeyboardButton(text='удалить товары 🍉🍉🍉', callback_data='remove_item'),
+            InlineKeyboardButton(text='добавить товар 🍉🍉🍉', callback_data='add_item'),
+        )
+    builder.adjust(1,2)
+    return builder.as_markup(resize_keyboard=True)
