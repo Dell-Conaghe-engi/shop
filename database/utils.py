@@ -189,4 +189,4 @@ def db_get_user_phone(chat_id):
     '''получение номера телефона пользователя по id'''
     with get_session() as session:
         query = select(Users.phone).where(Users.telegram == chat_id)
-        return session.execute(query).fetchone()[0]
+        return session.execute(query).scalar()
