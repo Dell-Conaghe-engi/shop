@@ -30,10 +30,8 @@ async def order_history(message: Message):
         return
 
     text = 'последние 5 заказов 📃:\n\n'
-    for item in orders:
-        order = item['order']
-        line_price = float(order.final_price)
-        text += f'{order.product_name} - {order.quantity}шт. - {line_price} ₽.\n\n'
+    for order in orders:
+        text += f'{order.product_name} - {order.final_price}₽ в количестве {order.quantity} шт.\n'
     await message.answer(text)
 
 @router.message(F.text == 'Вернуться в главное меню 🏠')
