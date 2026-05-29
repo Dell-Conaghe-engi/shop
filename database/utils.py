@@ -98,13 +98,7 @@ def db_get_user_cart(chat_id):
         return session.scalar(query)
 
 
-def db_add_or_update_item(
-        cart_id: int,
-        product_id: int,
-        product_name: str,
-        product_price: DECIMAL,
-        increment: int = 0
-):
+def db_add_or_update_item(cart_id: int, product_id: int, product_name: str, product_price: DECIMAL, increment: int = 0):
     """Добавление или обновление товара в корзине"""
     try:
         with get_session() as session:
@@ -163,30 +157,50 @@ def db_get_product_by_name(product_name):
         return session.scalar(query)
 
 
-def db_get_cart_items(chat_id):
-    '''получение товаров из корзины пользователя'''
+def db_get_cart_items(chat_id: int):
+    """возвращает товары из корзины пользователя"""
     with get_session() as session:
         items = (
             session.query(FinallyCarts)
             .join(Carts, FinallyCarts.cart_id == Carts.id)
-            .join(Users, Carts.user_id == Users.id)
+            .join(Users, Users.id == Carts.user_id)
             .filter(Users.telegram == chat_id)
             .all()
         )
+        print("########", items)
+
         result = []
         for item in items:
             result.append({
-                'product_id': item.product_id,
-                'product_name': item.product_name,
-                'quantity': item.quantity,
-                'final_price': float(item.final_price)
-            }
-            )
-            return result
+                "product_id": item.product_id,
+                "product_name": item.product_name,
+                "quantity": item.quantity,
+                "final_price": float(item.final_price)
+            })
 
+        return result
 
 def db_get_user_phone(chat_id):
     '''получение номера телефона пользователя по id'''
     with get_session() as session:
         query = select(Users.phone).where(Users.telegram == chat_id)
         return session.execute(query).scalar()
+
+def db_save_order_history(chat_id):
+    '''сохранение истории заказов'''
+    cart = db_get_user_cart(chat_id)
+
+    if not cart:
+        return None
+
+    with get_session() as session:
+        final_items = session.query(FinallyCarts).filter_by(cart_id=cart.id).all()
+        for item in final_items:
+            session.add(Orders(
+                cart_id=cart.id,
+                product_name=item.product_name,
+                quantity=item.quantity,
+                final_price=item.final_price
+            ))
+        session.commit()
+

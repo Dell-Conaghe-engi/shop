@@ -1,7 +1,7 @@
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from config import MANAGER_ID
-from database.utils import db_get_user_phone
+from database.utils import db_get_user_phone, db_save_order_history
 from bot_utils.counting_products import counting_products
 
 router = Router()
@@ -25,5 +25,8 @@ async def confirm_order(callback: CallbackQuery, bot: Bot):
         await callback.message.edit_text('оформление заказа без товаров не возможно')
         await callback.answer()
         return
+
     count, text, total_price, cart_id = context
     await bot.send_message(MANAGER_ID, text, parse_mode='HTML')
+
+    db_save_order_history(user.id)
