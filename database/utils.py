@@ -204,3 +204,16 @@ def db_save_order_history(chat_id):
             ))
         session.commit()
 
+def db_clear_finally_cart(chat_id):
+    """Очистка товаров в финальной корзине после оформление покупки"""
+
+    cart = db_get_user_cart(chat_id)
+
+    if not cart:
+        return
+
+    with get_session() as session:
+        query = delete(FinallyCarts).where(FinallyCarts.cart_id == cart.id)
+        session.execute(query)
+        session.commit()
+
