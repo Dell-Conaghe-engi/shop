@@ -217,3 +217,15 @@ def db_clear_finally_cart(chat_id):
         session.execute(query)
         session.commit()
 
+def db_get_product_for_delete(chat_id):
+    '''удаление товаров из корзины'''
+    with get_session() as session:
+        query = (
+            select(FinallyCarts.id, FinallyCarts.product_name)
+            .join(Carts, FinallyCarts.cart_id == Carts.id)
+            .join(Users, Carts.user_id == Users.id)
+            .where(Users.telegram == chat_id)
+        )
+        return session.execute(query).fetchall()
+
+
