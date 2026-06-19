@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from database.base import engine
 from database.models import Users, Carts, Categories, FinallyCarts, Orders, Products
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import update, select, func, join, DECIMAL
+from sqlalchemy import update, select, func, join, DECIMAL, delete
 
 '''создание, чтение,изменение и удаление, данных с помощью функций в базу данных'''
 
@@ -228,4 +228,6 @@ def db_get_product_for_delete(chat_id):
         )
         return session.execute(query).fetchall()
 
+def db_increase_product_quantity(cart_id):
+    pass
 
