@@ -1,5 +1,5 @@
 def generate_cart_text(cart_items: list) -> str:
-
+    '''генерация текста о содержимом корзины'''
     if not cart_items:
         return " Ваша корзина пуста."
 

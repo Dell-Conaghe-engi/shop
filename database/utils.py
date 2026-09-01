@@ -180,11 +180,13 @@ def db_get_cart_items(chat_id: int):
 
         return result
 
+
 def db_get_user_phone(chat_id):
     '''получение номера телефона пользователя по id'''
     with get_session() as session:
         query = select(Users.phone).where(Users.telegram == chat_id)
         return session.execute(query).scalar()
+
 
 def db_save_order_history(chat_id):
     '''сохранение истории заказов'''
@@ -204,6 +206,7 @@ def db_save_order_history(chat_id):
             ))
         session.commit()
 
+
 def db_clear_finally_cart(chat_id):
     """Очистка товаров в финальной корзине после оформление покупки"""
 
@@ -217,6 +220,7 @@ def db_clear_finally_cart(chat_id):
         session.execute(query)
         session.commit()
 
+
 def db_get_product_for_delete(chat_id):
     '''удаление товаров из корзины'''
     with get_session() as session:
@@ -228,6 +232,37 @@ def db_get_product_for_delete(chat_id):
         )
         return session.execute(query).fetchall()
 
-def db_increase_product_quantity(cart_id):
-    pass
 
+def db_increase_product_quantity(finally_cart_id):
+    ''''увеличение количества товара в корзине'''
+    with get_session() as session:
+        item = session.execute(select(FinallyCarts).where(FinallyCarts.cart_id == finally_cart_id)).scalar_one_or_none()
+        if not item:
+            return False
+        product = session.execute(select(Products).where(Products.id == item.product_id)).scalar_one_or_none()
+        if not product:
+            return False
+
+        item.quantity += 1
+        item.final_price = float(product.price) * item.quantity
+
+        session.commit()
+        return True
+
+
+def db_decrease_product_quantity(finally_cart_id):
+    '''уменьшение количества товара в корзине'''
+    with get_session() as session:
+        item = session.execute(select(FinallyCarts).where(FinallyCarts.cart_id == finally_cart_id)).scalar_one_or_none()
+        if not item:
+            return False
+        product = session.execute(select(Products).where(Products.id == item.product_id)).scalar_one_or_none()
+        if not product:
+            return False
+        item.quantity -= 1
+        if item.quantity <= 0:
+            session.delete(item)
+        else:
+            item.final_price = float(product.price) * item.quantity
+        session.commit()
+        return True
