@@ -79,7 +79,7 @@ async def decrease_quantity(callback: CallbackQuery, bot: Bot):
         text = generate_cart_text(cart_items)
         keyboard = cart_actions_kb()
         await callback.message.edit_text(text=text, reply_markup=keyboard)
-    await callback.answer('количество уменьшено')
+    await callback.answer('количество уменьшено🍉')
 
 
 @router.callback_query(F.data == "back_to_cart_review")

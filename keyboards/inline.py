@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from config import MANAGER_ID
 from database.utils import db_get_all_categories, db_get_finally_price, db_get_product
 
 
@@ -54,3 +55,15 @@ def cart_actions_kb():
         )
     builder.adjust(1,2)
     return builder.as_markup(resize_keyboard=True)
+
+def get_settings_menu():
+    """меню настроек"""
+    builder = InlineKeyboardBuilder()
+    builder.button(text='Сменить язык', callback_data='change_language')
+    builder.button(text='удалить аккаунт', callback_data='delete_account')
+    if MANAGER_ID:
+        builder.button(text='связаться с менеджером 🍉', url=f'tg://user?id={MANAGER_ID}')
+    builder.button(text='⬅️ Назад', callback_data='back_to_menu')
+    builder.adjust(1)
+    return builder.as_markup()
+
