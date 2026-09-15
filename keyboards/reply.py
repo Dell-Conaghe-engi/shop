@@ -15,7 +15,7 @@ def start_kb():
 def phone_kb():
     '''кнопка для ввода телефона'''
     builder = ReplyKeyboardBuilder()
-    builder.button(text='Отправьте ваш номер телефона', request_contact=True)
+    builder.button(text='🍉🍉🍉 Отправьте ваш номер телефона 🍉🍉🍉', request_contact=True)
     return builder.as_markup(resize_keyboard=True)
 
 
@@ -42,3 +42,4 @@ def arrow_back_button():
     builder = ReplyKeyboardBuilder()
     builder.button(text='⬅️ Назад')
     return builder.as_markup(resize_keyboard=True)
+
